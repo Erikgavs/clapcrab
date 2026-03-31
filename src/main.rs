@@ -49,7 +49,15 @@ fn main() -> anyhow::Result<()> {
                     Some(time) => {
                         let elapsed = time.elapsed();
                         if elapsed.as_millis() > 100 && elapsed.as_millis() < 700 {
-                            println!("Double clap");
+                            let dir = std::env::current_dir().unwrap().display().to_string();
+                            std::process::Command::new("osascript")
+                                .arg("-e")
+                                .arg(format!(
+                                    "tell application \"Terminal\" to do script \"cd {} && claude\"",
+                                    dir
+                                ))
+                                .spawn()
+                                .expect("Failed to launch claude");
                             last_clap = None;
                         } else {
                             last_clap = Some(std::time::Instant::now());
@@ -72,7 +80,9 @@ fn main() -> anyhow::Result<()> {
     )?;
 
     stream.play()?;
-    std::thread::sleep(std::time::Duration::from_secs(10));
+    loop {
+        std::thread::sleep(std::time::Duration::from_secs(1));
+    }
 
     Ok(())
 }
