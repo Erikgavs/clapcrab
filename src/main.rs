@@ -14,13 +14,23 @@ fn main() -> anyhow::Result<()> {
         .context("Error obtaining the config of the device")?;
     println!("{:?} micro config", config);
 
+    let mut hight_sound = false;
+
     let stream = device.build_input_stream(
         &config.into(),
         move |data: &[f32], _: &cpal::InputCallbackInfo| {
             let hight = data.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
 
-            if hight > 0.01 {
-                println!("Clap detected {}", hight);
+            // A loud sound just started — mark it and wait for the next block
+            if hight > 0.1 && !hight_sound {
+                hight_sound = true;
+            // Volume dropped quickly after being loud — short sound = clap
+            } else if hight < 0.01 && hight_sound {
+                println!("CLAP");
+                hight_sound = false;
+            // Still quiet, nothing happening — reset just in case
+            } else if hight < 0.01 {
+                hight_sound = false;
             }
         },
         |err| {
