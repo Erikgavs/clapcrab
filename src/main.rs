@@ -18,7 +18,10 @@ fn main() -> anyhow::Result<()> {
         &config.into(),
         |data: &[f32], _: &cpal::InputCallbackInfo| {
             let hight = data.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
-            println!("volumen: {}", hight);
+
+            if hight > 0.01 {
+                println!("Clap detected", hight);
+            }
         },
         |err| {
             eprintln!("Error in stream {}", err);
