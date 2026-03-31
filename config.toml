@@ -1,0 +1,10 @@
+dir = "/Users/erikgavilan/Documents/clapcrab"
+
+[[apps]]
+name = "Claude Code"
+command = "claude --continue"
+terminal = true
+
+[[apps]]
+name = "zed"
+command = "zed"
