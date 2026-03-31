@@ -6,6 +6,17 @@ use cpal::traits::HostTrait;
 use cpal::traits::StreamTrait;
 
 fn main() -> anyhow::Result<()> {
+    // Collect all command line args into a list: ["clapcrab", "--dir", "/path"]
+    let args: Vec<String> = std::env::args().collect();
+    // Look for "--dir" in the args and get its position
+    if let Some(position) = args.iter().position(|a| a == "--dir") {
+        // Get the next argument after "--dir" — that's the directory path
+        if let Some(dir) = args.get(position + 1) {
+            // Change the working directory so commands run from there
+            std::env::set_current_dir(dir)?;
+        }
+    }
+
     // micro-detection
     let host = cpal::default_host();
     let device = host
