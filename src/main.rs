@@ -58,7 +58,8 @@ fn main() -> anyhow::Result<()> {
                                 ))
                                 .spawn()
                                 .expect("Failed to launch claude");
-                            last_clap = None;
+                            std::process::exit(0);
+
                         } else {
                             last_clap = Some(std::time::Instant::now());
                         }
