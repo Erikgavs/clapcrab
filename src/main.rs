@@ -18,7 +18,7 @@ fn main() -> anyhow::Result<()> {
         &config.into(),
         |data: &[f32], _: &cpal::InputCallbackInfo| {
             let hight = data.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
-            println!("volumen: {}", pico);
+            println!("volumen: {}", hight);
         },
         |err| {
             eprintln!("Error in stream {}", err);
