@@ -11,6 +11,14 @@ ClapCrab is a lightweight, real-time audio detection tool built in Rust. It list
 - 🚀 Triggers custom commands on detection (e.g., open Claude Code)
 - 🔇 Filters out voices and ambient noise — only reacts to sharp, short sounds
 
+## ⚠️ Platform Support
+
+| Platform | Status |
+|----------|--------|
+| 🍎 macOS | ✅ Supported |
+| 🐧 Linux | 🔜 Coming soon |
+| 🪟 Windows | 🔜 Coming soon |
+
 ## 📦 Installation
 
 ```bash
@@ -22,7 +30,11 @@ cargo build --release
 ## ▶️ Usage
 
 ```bash
+# Run in the current directory
 cargo run
+
+# Specify a working directory for Claude Code
+cargo run -- --dir ~/Documents/my-project
 ```
 
 Clap twice and watch the magic happen ✨
@@ -32,7 +44,8 @@ Clap twice and watch the magic happen ✨
 - [x] Real-time microphone audio capture
 - [x] Single clap detection (volume spike + drop analysis)
 - [x] Double clap pattern recognition with timing validation
-- [ ] Execute system commands on double clap
+- [x] Execute system commands on double clap (opens Claude Code in Terminal.app)
+- [x] `--dir` flag to set working directory
 - [ ] Custom sound patterns (triple clap, rhythms)
 - [ ] Voice command detection 🗣️
 - [ ] Configurable actions per pattern
