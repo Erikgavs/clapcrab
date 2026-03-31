@@ -16,7 +16,7 @@ fn main() -> anyhow::Result<()> {
 
     let stream = device.build_input_stream(
         &config.into(),
-        |data: &[f32], _: &cpal::InputCallbackInfo| {
+        move |data: &[f32], _: &cpal::InputCallbackInfo| {
             let hight = data.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
 
             if hight > 0.01 {
