@@ -6,6 +6,17 @@ use cpal::traits::HostTrait;
 use cpal::traits::StreamTrait;
 
 fn main() -> anyhow::Result<()> {
+    // Collect all command line args into a list: ["clapcrab", "--dir", "/path"]
+    let args: Vec<String> = std::env::args().collect();
+    // Look for "--dir" in the args and get its position
+    if let Some(position) = args.iter().position(|a| a == "--dir") {
+        // Get the next argument after "--dir" — that's the directory path
+        if let Some(dir) = args.get(position + 1) {
+            // Change the working directory so commands run from there
+            std::env::set_current_dir(dir)?;
+        }
+    }
+
     // micro-detection
     let host = cpal::default_host();
     let device = host
@@ -26,7 +37,7 @@ fn main() -> anyhow::Result<()> {
             let hight = data.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
 
             // A loud sound just started — mark it and wait for the next block
-            if hight > 0.1 && !hight_sound {
+            if hight > 0.3 && !hight_sound {
                 hight_sound = true;
             // Volume dropped quickly after being loud — short sound = clap
             } else if hight < 0.01 && hight_sound {
@@ -38,8 +49,17 @@ fn main() -> anyhow::Result<()> {
                     Some(time) => {
                         let elapsed = time.elapsed();
                         if elapsed.as_millis() > 100 && elapsed.as_millis() < 700 {
-                            println!("Double clap");
-                            last_clap = None;
+                            let dir = std::env::current_dir().unwrap().display().to_string();
+                            std::process::Command::new("osascript")
+                                .arg("-e")
+                                .arg(format!(
+                                    "tell application \"Terminal\" to do script \"cd {} && claude\"",
+                                    dir
+                                ))
+                                .spawn()
+                                .expect("Failed to launch claude");
+                            std::process::exit(0);
+
                         } else {
                             last_clap = Some(std::time::Instant::now());
                         }
@@ -61,7 +81,9 @@ fn main() -> anyhow::Result<()> {
     )?;
 
     stream.play()?;
-    std::thread::sleep(std::time::Duration::from_secs(10));
+    loop {
+        std::thread::sleep(std::time::Duration::from_secs(1));
+    }
 
     Ok(())
 }
