@@ -20,7 +20,7 @@ fn main() -> anyhow::Result<()> {
             let hight = data.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
 
             if hight > 0.01 {
-                println!("Clap detected", hight);
+                println!("Clap detected {}", hight);
             }
         },
         |err| {
